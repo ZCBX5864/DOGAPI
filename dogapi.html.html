@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Document</title>
+</head>
+<style>
+    *{
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: monospace;
+        font-size: 20px;
+    }
+    body{
+       text-align: center;
+       padding-top: 20px;
+    }
+    select{
+        border-radius: 5px;  
+    }
+    #breed{
+        margin: 20px;
+    }
+    .slideshow{
+        width: 100%;
+        height: 90vh;
+        background-color: #D4C3C6 ;
+        position: relative;
+        flex: 1;
+    }
+    .slide{
+        position:absolute;
+        top: 0;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background-repeat: no-repeat;
+        background-size: contain;
+        background-position:center ;
+        z-index: 1;
+    }
+</style>
+<body>
+
+  <h1>狗狗相簿</h1>
+
+  <div id="breed">
+  
+  </div>
+  <div class="slideshow">
+
+  </div>
+
+
+
+<script>
+async function start(){
+    const response =await fetch('https://dog.ceo/api/breeds/list/all');
+    const data =await response.json();
+    console.log(data);
+    createBreedList(data.message)
+}
+start();
+
+function createBreedList(breedList){
+document.querySelector('#breed').innerHTML=`
+<select onchange="loadByBreed(this.value)">
+      <option>選擇品種</option>
+    ${Object.keys(breedList).map(function(breed){
+return `<option>${breed}</option>`
+    }).join('')}
+    </select>
+`
+}
+async function loadByBreed(breed){
+if(breed !="選擇品種"){
+const response =await fetch(`https://dog.ceo/api/breed/${breed}/images`);
+const data =await response.json()
+createSlideshow(data.message);
+}
+}
+
+function createSlideshow(images){
+document.querySelector('.slideshow').innerHTML=`
+<div class="slide" style="background-image:url('${images[0]}')"></div>
+`
+}
+
+
+
+
+
+
+</script>
+
+</body>
+</html>
